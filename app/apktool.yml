@@ -1,0 +1,15 @@
+version: 3.0.3
+apkFileName: nagisaland-mobile.apk
+usesFramework:
+  ids:
+  - 1
+sdkInfo:
+  minSdkVersion: 24
+  targetSdkVersion: 34
+versionInfo:
+  versionCode: 47
+  versionName: 0.17.2
+resourcesInfo:
+  packageId: 127
+doNotCompress:
+- arsc

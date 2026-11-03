@@ -1,0 +1,19 @@
+# 密钥（绝不进 Git）
+*.keystore
+*.jks
+key.properties
+dart_defines.txt
+panel_config.json
+# 产物
+dist/
+NagiBuild/out/
+*.apk
+# 大体积第三方工具 / 备份
+tools/jre/
+*.jar
+emulators/
+venerax/
+_backup_*/
+_to_delete/
+__pycache__/
+*.bak*
