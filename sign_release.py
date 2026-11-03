@@ -9,7 +9,7 @@ CI 编出来的 APK 已经是完整 App（主界面 + 漫画 + 番剧 + H），�
 再用 nagisaland-mobile.keystore 重新签名（uber-apk-signer 会先 zipalign）。
 
 用法：python sign_release.py [CI 的 APK 路径] [--lite]
-  不给路径：在 ci/、venerax/、../NagiBuild/out/ 里找最新的 Nagisaland-v*-arm64-v8a.apk
+  不给路径：在 ci/、venerax/、../NagiBuild/out/、../NagiBuild/build/app/outputs/… 里找最新的 Nagisaland-*-arm64-v8a.apk
   --lite：不带模拟器
 输出：dist/Nagisaland_v<版本>[_lite].apk（版本号来自 APK 本身，即 VeneraX-nagi 的 android/nagisaland.properties）
 需要：Java 11+；key.properties（keyAlias / storePassword）；tools/ 里的 apktool.jar（取 aapt2）和 uber-apk-signer.jar（没有会自动下载）
@@ -21,12 +21,15 @@ TOOLS = os.path.join(HERE, 'tools')
 DIST = os.path.join(HERE, 'dist')
 EMUS = os.path.join(HERE, 'emulators')
 KEYSTORE = os.path.join(HERE, 'nagisaland-mobile.keystore')
-SEARCH = [os.path.join(HERE, 'ci'), os.path.join(HERE, 'venerax'), os.path.join(HERE, '..', 'NagiBuild', 'out')]
+# CI 下载的放 ci\；本地编译（NagiBuild 里 flutter build apk）的直接从输出目录找
+SEARCH = [os.path.join(HERE, 'ci'), os.path.join(HERE, 'venerax'), os.path.join(HERE, '..', 'NagiBuild', 'out'),
+          os.path.join(HERE, '..', 'NagiBuild', 'build', 'app', 'outputs', 'apk', 'release'),
+          os.path.join(HERE, '..', 'NagiBuild', 'build', 'app', 'outputs', 'flutter-apk')]
 JARS = {
     'apktool.jar': 'https://github.com/iBotPeaches/Apktool/releases/download/v3.0.3/apktool_3.0.3.jar',
     'uber-apk-signer.jar': 'https://github.com/patrickfav/uber-apk-signer/releases/download/v1.3.0/uber-apk-signer-1.3.0.jar',
 }
-UNIFIED_RX = re.compile(r'^Nagisaland-v[\d.]+.*arm64-v8a\.apk$', re.I)
+UNIFIED_RX = re.compile(r'^Nagisaland-v?[\d.]+.*arm64-v8a\.apk$', re.I)   # CI：Nagisaland-v0.19.0-…；本地：Nagisaland-0.19.0-arm64-v8a.apk
 
 
 def is_unified(apk):
