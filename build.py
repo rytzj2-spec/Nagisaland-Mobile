@@ -6,6 +6,7 @@
 （没有的话会自动从 GitHub 下载这两个 jar）
 
 用法：python build.py [版本号，如 0.2.1] [--lite] [--no-comic]
+  ci/、venerax/、NagiBuild/out/ 里有统一版 APK（Nagisaland-v*-arm64-v8a.apk）时直接交给 sign_release.py，下面的合并流程不用了
   emulators/ 里的所有 .apk 会被打包进去（App 里「模拟器」页一键安装）；--lite 不带模拟器
   venerax/ 里的 VeneraX APK 会合并进来（底部「漫画」）；--no-comic 不合并（见 merge_venerax.py）
 输出：dist/Nagisaland_v<版本>.apk
@@ -89,6 +90,13 @@ def main():
             urllib.request.urlretrieve(url, p)
 
     lite = '--lite' in sys.argv
+    # 统一版（VeneraX-nagi 一次编出完整 App）：不再反编译合并，只加模拟器 + 正式签名（版本号以 APK 里的为准）
+    import sign_release
+    unified = None if '--no-comic' in sys.argv else sign_release.find_ci_apk()
+    if unified:
+        print('找到统一版 APK，交给 sign_release.py（版本号用 APK 自己的，忽略命令行版本号）：' + unified, flush=True)
+        sign_release.run(unified, lite)
+        return
     args = [a for a in sys.argv[1:] if not a.startswith('--')]
     yml = os.path.join(APP, 'apktool.yml')
     s = open(yml, encoding='utf-8').read()

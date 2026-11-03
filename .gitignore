@@ -17,3 +17,6 @@ _backup_*/
 _to_delete/
 __pycache__/
 *.bak*
+
+# 统一版 CI 的 APK 放这里（sign_release.py 读取）
+ci/
